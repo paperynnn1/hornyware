@@ -1,0 +1,119 @@
+local rage = {
+    movement = {
+        enabled = false,
+        speed = 0
+    }
+}
+local misc = {
+    exploits = {
+        antifling = false,
+    }
+}
+local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/wally-rblx/LinoriaLib/main/Library.lua'))()
+
+local ThemeManager = loadstring(game:HttpGet('https://raw.githubusercontent.com/wally-rblx/LinoriaLib/main/addons/ThemeManager.lua'))()
+
+local SaveManager = loadstring(game:HttpGet('https://raw.githubusercontent.com/wally-rblx/LinoriaLib/main/addons/SaveManager.lua'))()
+
+local Window = Library:CreateWindow({
+    Title = 'hornyware.v0.01',
+    Center = true, 
+    AutoShow = true,
+})
+
+local Tabs = {
+    LegitTab = Window:AddTab('Legit'), 
+    RageTab = Window:AddTab('Rage'),
+    ['UI Settings'] = Window:AddTab('Configurations'),
+}
+
+local LeftGroupBox1 = Tabs.RageTab:AddLeftGroupbox('MoveMent')
+local LeftGroupBox2 = Tabs.RageTab:AddRightGroupbox('Exploits')
+
+LeftGroupBox1:AddToggle('MyToggle1', {
+    Text = 'Enabled',
+    Default = false, 
+    Tooltip = 'enabled the cframe movement',
+})
+
+Toggles.MyToggle1:OnChanged(function()
+   rage.movement.enabled = Toggles.MyToggle1.Value
+end)
+Toggles.MyToggle1:SetValue(false)
+
+LeftGroupBox1:AddSlider('MySlider1', {
+    Text = 'Speed',
+    Default = 0,
+    Min = 0,
+    Max = 5,
+    Rounding = 1,
+    Compact = false,
+})
+local Number = Options.MySlider1.Value
+Options.MySlider1:OnChanged(function()
+    rage.movement.speed = Options.MySlider1.Value
+end)
+Options.MySlider1:SetValue(0)
+
+LeftGroupBox2:AddToggle('MyToggle2', {
+    Text = 'Anti Fling',
+    Default = false, 
+    Tooltip = 'enabled anchored aka antifling',
+})
+
+Toggles.MyToggle2:OnChanged(function()
+   misc.exploits.antifling = Toggles.MyToggle2.Value
+end)
+Toggles.MyToggle2:SetValue(false)
+
+game:GetService("RunService").Heartbeat:Connect(function()
+if rage.movement.enabled  then
+    for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+        if v:IsA("Script") and v.Name ~= "Health" and v.Name ~= "Sound" and v:FindFirstChild("LocalScript") then
+            v:Destroy()
+        end
+    end
+    game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
+        repeat
+            wait()
+        until game.Players.LocalPlayer.Character
+        char.ChildAdded:Connect(function(child)
+            if child:IsA("Script") then 
+                wait(0.1)
+                if child:FindFirstChild("LocalScript") then
+                    child.LocalScript:FireServer()
+                end
+            end
+        end)
+    end)
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame =
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame +
+    game.Players.LocalPlayer.Character.Humanoid.MoveDirection * rage.movement.speed
+end 
+if misc.exploits.antifling == true then
+    game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+elseif misc.exploits.antifling == false then
+    game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+end
+end)
+
+local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu')
+
+MenuGroup:AddButton('Unload', function() Library:Unload() end)
+MenuGroup:AddLabel('Menu bind'):AddKeyPicker('MenuKeybind', { Default = 'End', NoUI = true, Text = 'Menu keybind' }) 
+
+Library.ToggleKeybind = Options.MenuKeybind 
+
+ThemeManager:SetLibrary(Library)
+SaveManager:SetLibrary(Library)
+
+SaveManager:IgnoreThemeSettings() 
+
+SaveManager:SetIgnoreIndexes({ 'MenuKeybind' }) 
+
+ThemeManager:SetFolder('horny configs')
+SaveManager:SetFolder('horny themes')
+
+SaveManager:BuildConfigSection(Tabs['UI Settings']) 
+
+ThemeManager:ApplyToTab(Tabs['UI Settings'])
