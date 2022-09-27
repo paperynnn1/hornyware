@@ -1,3 +1,13 @@
+local aiming = {
+    targetaim = {
+        enabled = false,
+        key = "q",
+        notif = false,
+        prediction = 0.11,
+        autoprediction = false,
+        hitpart = "HumanoidRootPart"
+    }
+}
 local rage = {
     movement = {
         enabled = false,
@@ -6,7 +16,7 @@ local rage = {
 }
 local misc = {
     exploits = {
-        antifling = false,
+        antifling = false
     }
 }
 local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/wally-rblx/LinoriaLib/main/Library.lua'))()
@@ -22,13 +32,13 @@ local Window = Library:CreateWindow({
 })
 
 local Tabs = {
-    LegitTab = Window:AddTab('Legit'), 
     RageTab = Window:AddTab('Rage'),
     ['UI Settings'] = Window:AddTab('Configurations'),
 }
 
 local LeftGroupBox1 = Tabs.RageTab:AddLeftGroupbox('MoveMent')
 local LeftGroupBox2 = Tabs.RageTab:AddRightGroupbox('Exploits')
+local LeftGroupBox3 = Tabs.RageTab:AddRightGroupbox('Target Aim')
 
 LeftGroupBox1:AddToggle('MyToggle1', {
     Text = 'Enabled',
